@@ -3,3 +3,4 @@ flask-socketio
 eventlet
 requests
 pillow
+gunicorn app:app
