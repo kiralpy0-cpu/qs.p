@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Logs</title>
+</head>
+<body>
+    <h2>Logs en direct</h2>
+    <ul id="logs"></ul>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        const socket = io("http://localhost:5000");
+
+        socket.on("new_log", function(data) {
+            const li = document.createElement("li");
+            li.innerHTML =
+                data.time + " | " +
+                data.ip + " | " +
+                data.city + " | " +
+                data.country;
+
+            document.getElementById("logs").appendChild(li);
+        });
+    </script>
+</body>
+</html>
