@@ -1,11 +1,12 @@
-from flask import Flask, send_file, request
-from flask_socketio import SocketIO
+from flask import Flask, send_file, request, jsonify
 from PIL import Image
 from datetime import datetime
 import requests
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+
+# stockage simple en mémoire
+logs = []
 
 img = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
 img.save('tracker.png')
@@ -34,11 +35,17 @@ def tracker():
         "ua": ua
     }
 
+    logs.append(log)
     print(log)
-    socketio.emit("new_log", log)
 
     return send_file("tracker.png", mimetype="image/png")
 
 
+# 📡 API pour dashboard (polling)
+@app.route('/logs')
+def get_logs():
+    return jsonify(logs)
+
+
 if __name__ == "__main__":
- socketio.run(app, host="0.0.0.0", port=10000, allow_unsafe_werkzeug=True)
+    app.run(host="0.0.0.0", port=10000)
